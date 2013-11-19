@@ -36,47 +36,47 @@ class Sudoku
         mini_grid_5 = @grid[3][6..8] + @grid[4][6..8] + @grid[5][6..8]
       end
     elsif row.between?(6,8)
-     if column.between?(0,2)
-      mini_grid_6 = @grid[6][0..2] + @grid[7][0..2] + @grid[8][0..2]
-    elsif column.between?(3,5)
-      mini_grid_7 = @grid[6][3..5] + @grid[7][3..5] + @grid[8][3..5]
-    elsif column.between?(6,8)
-      mini_grid_8 = @grid[6][6..8] + @grid[7][6..8] + @grid[8][6..8]
-    end
-  end
-end
-
-def solve!
-  @row = 0
-  @column = 0
-  one_dimensional_grid = @grid.flatten
-  one_dimensional_grid.map! do |element|
-    if element == 0
-      possibilities = (1..9).to_a
-      possibilities = possibilities - (get_row(@row) + get_column(@column) + get_mini_grid(@row,@column))
-      if possibilities.length == 1
-        (element = possibilities[0])
-      else
-        (element = element)
+      if column.between?(0,2)
+        mini_grid_6 = @grid[6][0..2] + @grid[7][0..2] + @grid[8][0..2]
+      elsif column.between?(3,5)
+        mini_grid_7 = @grid[6][3..5] + @grid[7][3..5] + @grid[8][3..5]
+      elsif column.between?(6,8)
+        mini_grid_8 = @grid[6][6..8] + @grid[7][6..8] + @grid[8][6..8]
       end
     end
-    @row += 1 if @column == 8
-    @column < 8 ? (@column += 1) : (@column = 0)
-    element
   end
-  @grid = one_dimensional_grid.each_slice(9).to_a
-  one_dimensional_grid.join("")
-end
 
-def recursive_solve!
-  while @grid.flatten.join.include?('0')
-    self.solve!
+  def solve!
+    @row = 0
+    @column = 0
+    one_dimensional_grid = @grid.flatten
+    one_dimensional_grid.map! do |element|
+      if element == 0
+        possibilities = (1..9).to_a
+        possibilities = possibilities - (get_row(@row) + get_column(@column) + get_mini_grid(@row,@column))
+        if possibilities.length == 1
+          (element = possibilities[0])
+        else
+          (element = element)
+        end
+      end
+      @row += 1 if @column == 8
+      @column < 8 ? (@column += 1) : (@column = 0)
+      element
+    end
+    @grid = one_dimensional_grid.each_slice(9).to_a
+    one_dimensional_grid.join("")
   end
-end
 
-def board
-  @answer_string = @grid.each {|row| row.join}.join
-end
+  def recursive_solve!
+    while @grid.flatten.join.include?('0')
+      self.solve!
+    end
+  end
+
+  def board
+    @answer_string = @grid.each {|row| row.join}.join
+  end
 end
 
 
